@@ -1,0 +1,277 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Token Transfer - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../misc/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../misc/setup.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><a href="../event/index.html"><strong aria-hidden="true">3.</strong> Events</a></li><li><ol class="section"><li><a href="../event/adder.html"><strong aria-hidden="true">3.1.</strong> Adding Machine</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/list.html"><strong aria-hidden="true">4.2.</strong> Maps</a></li><li><a href="../storage/constants.html"><strong aria-hidden="true">4.3.</strong> Configurable Constants</a></li></ol></li><li><a href="../types/index.html"><strong aria-hidden="true">5.</strong> Types and Traits</a></li><li><ol class="section"><li><a href="../types/collateral.html"><strong aria-hidden="true">5.1.</strong> Collateral Management</a></li><li><a href="../types/structs.html"><strong aria-hidden="true">5.2.</strong> Nested Structs</a></li></ol></li><li><a href="../common/index.html"><strong aria-hidden="true">6.</strong> Design Patterns</a></li><li><ol class="section"><li><a href="../common/permissioned.html"><strong aria-hidden="true">6.1.</strong> Permissioned Methods</a></li><li><a href="../common/loop.html"><strong aria-hidden="true">6.2.</strong> Blockchain Event Loop</a></li></ol></li><li><a href="../recipes/index.html"><strong aria-hidden="true">7.</strong> Recipes</a></li><li><ol class="section"><li><a href="../recipes/token.html" class="active"><strong aria-hidden="true">7.1.</strong> Token Transfer</a></li><li><a href="../recipes/social.html"><strong aria-hidden="true">7.2.</strong> Social Network</a></li></ol></li><li><a href="../tour/index.html"><strong aria-hidden="true">8.</strong> SRML Tour</a></li><li><ol class="section"><li><a href="../tour/treasury.html"><strong aria-hidden="true">8.1.</strong> Treasury</a></li></ol></li><li><a href="../safety/index.html"><strong aria-hidden="true">9.</strong> Advanced</a></li><li><ol class="section"><li><a href="../safety/cop.html"><strong aria-hidden="true">9.1.</strong> Declarative Programming</a></li><li><a href="../safety/optimizations.html"><strong aria-hidden="true">9.2.</strong> Optimizations</a></li></ol></li><li><a href="../misc/dessert.html"><strong aria-hidden="true">10.</strong> Featured Tutorials</a></li><li class="spacer"></li><li class="affix"><a href="../misc/resource.html">More Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#mapping-accounts-to-balances" id="mapping-accounts-to-balances"><h1>Mapping Accounts to Balances</h1></a>
+<p>Mappings are a very powerful primitive. A <em>stateful</em> cryptocurrency might store a mapping between accounts and balances. Likewise, mappings prove useful when representing <em>owned</em> data. By tracking ownership with maps, it is easy manage permissions for modifying values specific to individual users or groups.</p>
+<p>To implement a simple token transfer with Substrate,</p>
+<ol>
+<li>set total supply</li>
+<li>establish ownership upon configuration of circulating tokens</li>
+<li>coordinate token transfers with the runtime functions</li>
+</ol>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_storage! {
+  trait Store for Module&lt;T: Trait&gt; as TokenTransfer {
+    pub TotalSupply get(total_supply): u64 = 21000000; // (1)
+
+    pub GetBalance get(get_balance): map T::AccountId =&gt; u64; // (3)
+
+    Init get(is_init): bool; // (2)
+  }
+}
+#}</code></pre></pre>
+<p>Declare an event for when token transfers occur to notify clients</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_event!(
+    pub enum Event&lt;T&gt; where AccountId = &lt;T as system::Trait&gt;::AccountId {
+        // notifies upon token transfers
+        Transfer(AccountId, AccountId, u64), // (from, to, value)
+    }
+);
+#}</code></pre></pre>
+<p>Define the business logic in runtime methods</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+  pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+    // initialize the default event for this module
+    fn deposit_event() = default;
+
+    // initialize the token
+    // transfers the total_supply amout to the caller
+    fn init(origin) -&gt; Result {
+      let sender = ensure_signed(origin)?;
+      ensure!(Self::is_init() == false, &quot;Already initialized.&quot;);
+
+      &lt;GetBalance&lt;T&gt;&gt;::insert(sender, Self::total_supply());
+
+      &lt;Init&lt;T&gt;&gt;::put(true);
+
+      Ok(())
+    }
+
+    // transfer tokens from one account to another
+    fn transfer(_origin, to: T::AccountId, value: u64) -&gt; Result {
+      let sender = ensure_signed(_origin)?;
+      let sender_balance = Self::get_balance(sender.clone());
+      ensure!(sender_balance &gt;= value, &quot;Not enough balance.&quot;);
+
+      let updated_from_balance = sender_balance.checked_sub(value).ok_or(&quot;overflow in calculating balance&quot;)?;
+      let receiver_balance = Self::get_balance(to.clone());
+      let updated_to_balance = receiver_balance.checked_add(value).ok_or(&quot;overflow in calculating balance&quot;)?;
+      
+      // reduce sender's balance
+      &lt;GetBalance&lt;T&gt;&gt;::insert(sender.clone(), updated_from_balance);
+
+      // increase receiver's balance
+      &lt;GetBalance&lt;T&gt;&gt;::insert(to.clone(), updated_to_balance);
+
+      Self::deposit_event(RawEvent::Transfer(sender, to, value));
+      
+      Ok(())
+    }
+  }
+}
+#}</code></pre></pre>
+<p>S/O <a href="https://github.com/gautamdhameja/substrate-demo/blob/master/runtime/src/template.rs"><code>gautamdhameja/substrate-demo</code></a> for providing this recipe!</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../recipes/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../recipes/social.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../recipes/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../recipes/social.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

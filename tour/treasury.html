@@ -1,0 +1,283 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Treasury - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../misc/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../misc/setup.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><a href="../event/index.html"><strong aria-hidden="true">3.</strong> Events</a></li><li><ol class="section"><li><a href="../event/adder.html"><strong aria-hidden="true">3.1.</strong> Adding Machine</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/list.html"><strong aria-hidden="true">4.2.</strong> Maps</a></li><li><a href="../storage/constants.html"><strong aria-hidden="true">4.3.</strong> Configurable Constants</a></li></ol></li><li><a href="../types/index.html"><strong aria-hidden="true">5.</strong> Types and Traits</a></li><li><ol class="section"><li><a href="../types/collateral.html"><strong aria-hidden="true">5.1.</strong> Collateral Management</a></li><li><a href="../types/structs.html"><strong aria-hidden="true">5.2.</strong> Nested Structs</a></li></ol></li><li><a href="../common/index.html"><strong aria-hidden="true">6.</strong> Design Patterns</a></li><li><ol class="section"><li><a href="../common/permissioned.html"><strong aria-hidden="true">6.1.</strong> Permissioned Methods</a></li><li><a href="../common/loop.html"><strong aria-hidden="true">6.2.</strong> Blockchain Event Loop</a></li></ol></li><li><a href="../recipes/index.html"><strong aria-hidden="true">7.</strong> Recipes</a></li><li><ol class="section"><li><a href="../recipes/token.html"><strong aria-hidden="true">7.1.</strong> Token Transfer</a></li><li><a href="../recipes/social.html"><strong aria-hidden="true">7.2.</strong> Social Network</a></li></ol></li><li><a href="../tour/index.html"><strong aria-hidden="true">8.</strong> SRML Tour</a></li><li><ol class="section"><li><a href="../tour/treasury.html" class="active"><strong aria-hidden="true">8.1.</strong> Treasury</a></li></ol></li><li><a href="../safety/index.html"><strong aria-hidden="true">9.</strong> Advanced</a></li><li><ol class="section"><li><a href="../safety/cop.html"><strong aria-hidden="true">9.1.</strong> Declarative Programming</a></li><li><a href="../safety/optimizations.html"><strong aria-hidden="true">9.2.</strong> Optimizations</a></li></ol></li><li><a href="../misc/dessert.html"><strong aria-hidden="true">10.</strong> Featured Tutorials</a></li><li class="spacer"></li><li class="affix"><a href="../misc/resource.html">More Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#smpl-treasury" id="smpl-treasury"><h1>smpl-treasury</h1></a>
+<p>This recipe demonstrates how <a href="https://github.com/paritytech/substrate/blob/master/srml/treasury/src/lib.rs">srml/treasury</a> instantiates a pot of funds and schedules funding. <em>See <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/treasury">kitchen/treasury</a> for the full code</em></p>
+<a class="header" href="#instantiate-a-pot" id="instantiate-a-pot"><h2>Instantiate a Pot</h2></a>
+<p>To instantiate a pool of funds, import <a href="https://crates.parity.io/sr_primitives/struct.ModuleId.html"><code>ModuleId</code></a> and <a href="https://crates.parity.io/sr_primitives/traits/trait.AccountIdConversion.html"><code>AccountIdConversion</code></a> from <a href="https://crates.parity.io/sr_primitives/index.html">sr-primitives</a>.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use runtime_primitives::{ModuleId, traits::AccountIdConversion};
+#}</code></pre></pre>
+<p>With these imports, a <code>MODULE_ID</code> constant can be generated as an identifier for the pool of funds. This identifier can be converted into an <code>AccountId</code> with the <code>into_account()</code> method provided by the <a href="https://crates.parity.io/sr_primitives/traits/trait.AccountIdConversion.html"><code>AccountIdConversion</code></a> trait.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+const MODULE_ID: ModuleId = ModuleId(*b&quot;example &quot;);
+
+impl&lt;T: Trait&gt; Module&lt;T&gt; {
+    pub fn account_id() -&gt; T::AccountId {
+        MODULE_ID.into_account()
+    }
+
+    fn pot() -&gt; BalanceOf&lt;T&gt; {
+        T::Currency::free_balance(&amp;Self::account_id())
+    }
+}
+#}</code></pre></pre>
+<p>Accessing the pot's balance is as simple as using the <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html"><code>Currency</code></a> trait to access the balance of the associated <code>AccountId</code>.</p>
+<a class="header" href="#proxy-transfers" id="proxy-transfers"><h2>Proxy Transfers</h2></a>
+<p>In <a href="https://github.com/paritytech/substrate/blob/master/srml/treasury/src/lib.rs">srml/treasury</a>, approved spending proposals are queued in runtime storage before they are scheduled for execution. For the example dispatch queue, each entry represents a request to transfer <code>BalanceOf&lt;T&gt;</code> to <code>T::AccountId</code> from the pot.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_storage! {
+    trait Store for Module&lt;T: Trait&gt; as STreasury {
+        /// the amount, the address to which it is sent
+        SpendQ get(spend_q): Vec&lt;(T::AccountId, BalanceOf&lt;T&gt;)&gt;;
+    }
+}
+#}</code></pre></pre>
+<p>In other words, the dispatch queue holds the <code>AccountId</code> of the recipient (destination) in the first field of the tuple and the <code>BalanceOf&lt;T&gt;</code> in the second field. The runtime method for adding a spend request to the queue looks like this</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // uses the example treasury as a proxy for transferring funds
+        fn proxy_transfer(origin, dest: T::AccountId, amount: BalanceOf&lt;T&gt;) -&gt; Result {
+            let sender = ensure_signed(origin)?;
+
+            let _ = T::Currency::transfer(&amp;sender, &amp;Self::account_id(), amount)?;
+            &lt;SpendQ&lt;T&gt;&gt;::mutate(|requests| requests.push((dest.clone(), amount)));
+            Self::deposit_event(RawEvent::ProxyTransfer(dest, amount));
+            Ok(())
+        }
+    }
+}
+#}</code></pre></pre>
+<p>This method transfers some funds to the pot along with the request to transfer the same funds from the pot to a recipient (the input field <code>dest: T::AccountId</code>).</p>
+<p>NOTE: <em>Instead of relying on direct requests, <a href="https://github.com/paritytech/substrate/blob/master/srml/treasury/src/lib.rs">srml/treasury</a> coordinates spending decisions through a proposal process.</em></p>
+<a class="header" href="#scheduling-spending" id="scheduling-spending"><h2>Scheduling Spending</h2></a>
+<p>To schedule spending like <a href="https://github.com/paritytech/substrate/blob/master/srml/treasury/src/lib.rs"><code>srml/treasury</code></a>, first add a configurable module constant in the <code>Trait</code>. This constant determines how often the spending queue is executed.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub trait Trait: system::Trait {
+    /// Period between successive spends.
+    type SpendPeriod: Get&lt;Self::BlockNumber&gt;;
+}
+#}</code></pre></pre>
+<p>This constant is invoked in the runtime method <a href="https://crates.parity.io/sr_primitives/traits/trait.OnFinalize.html"><code>on_finalize</code></a> to schedule spending every <code>T::SpendPeriod::get()</code> blocks.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+decl_module! {
+    pub struct Module&lt;T: Trait&gt; for enum Call where origin: T::Origin {
+        // other runtime methods
+        fn on_finalize(n: T::BlockNumber) {
+            if (n % T::SpendPeriod::get()).is_zero() {
+                Self::spend_funds();
+            }
+        }
+    }
+}
+#}</code></pre></pre>
+<p><em>To see the logic within <code>spend_funds</code>, see the <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/treasury">kitchen/treasury</a>.</em> This recipe could be extended to give priority to certain spend requests or set a cap on the spends for a given <code>spend_funds()</code> call.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../tour/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../safety/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../tour/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../safety/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

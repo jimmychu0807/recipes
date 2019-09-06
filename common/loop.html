@@ -1,0 +1,264 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Blockchain Event Loop - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../misc/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../misc/setup.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><a href="../event/index.html"><strong aria-hidden="true">3.</strong> Events</a></li><li><ol class="section"><li><a href="../event/adder.html"><strong aria-hidden="true">3.1.</strong> Adding Machine</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/list.html"><strong aria-hidden="true">4.2.</strong> Maps</a></li><li><a href="../storage/constants.html"><strong aria-hidden="true">4.3.</strong> Configurable Constants</a></li></ol></li><li><a href="../types/index.html"><strong aria-hidden="true">5.</strong> Types and Traits</a></li><li><ol class="section"><li><a href="../types/collateral.html"><strong aria-hidden="true">5.1.</strong> Collateral Management</a></li><li><a href="../types/structs.html"><strong aria-hidden="true">5.2.</strong> Nested Structs</a></li></ol></li><li><a href="../common/index.html"><strong aria-hidden="true">6.</strong> Design Patterns</a></li><li><ol class="section"><li><a href="../common/permissioned.html"><strong aria-hidden="true">6.1.</strong> Permissioned Methods</a></li><li><a href="../common/loop.html" class="active"><strong aria-hidden="true">6.2.</strong> Blockchain Event Loop</a></li></ol></li><li><a href="../recipes/index.html"><strong aria-hidden="true">7.</strong> Recipes</a></li><li><ol class="section"><li><a href="../recipes/token.html"><strong aria-hidden="true">7.1.</strong> Token Transfer</a></li><li><a href="../recipes/social.html"><strong aria-hidden="true">7.2.</strong> Social Network</a></li></ol></li><li><a href="../tour/index.html"><strong aria-hidden="true">8.</strong> SRML Tour</a></li><li><ol class="section"><li><a href="../tour/treasury.html"><strong aria-hidden="true">8.1.</strong> Treasury</a></li></ol></li><li><a href="../safety/index.html"><strong aria-hidden="true">9.</strong> Advanced</a></li><li><ol class="section"><li><a href="../safety/cop.html"><strong aria-hidden="true">9.1.</strong> Declarative Programming</a></li><li><a href="../safety/optimizations.html"><strong aria-hidden="true">9.2.</strong> Optimizations</a></li></ol></li><li><a href="../misc/dessert.html"><strong aria-hidden="true">10.</strong> Featured Tutorials</a></li><li class="spacer"></li><li class="affix"><a href="../misc/resource.html">More Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#scheduling-execution" id="scheduling-execution"><h1>Scheduling Execution</h1></a>
+<p>Blockchain-based applications use the block number as a proxy for time for scheduling events. For example, the <a href="https://github.com/paritytech/substrate/blob/master/srml/treasury/src/lib.rs"><code>srml/treasury</code></a> module schedules spending according to a <code>SpendPeriod</code> constant (<em>see <a href="../storage/constants.html">constants</a> to configure module constants</em>). Specifically, the runtime method <code>spend_funds()</code> is executed every block in which <code>block_number % SpendPeriod == 0</code> (i.e. every <code>SpendPeriod</code> blocks, spending occurs).</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// decl_module block
+fn on_finalize(n: T::BlockNumber) {
+    // Check to see if we should spend some funds!
+    if (n % T::SpendPeriod::get()).is_zero() {
+        Self::spend_funds();
+    }
+}
+#}</code></pre></pre>
+<p><em>this snippet can be found in the <code>on_finalize</code> method of <a href="https://github.com/paritytech/substrate/blob/master/srml/treasury/src/lib.rs">treasury</a></em></p>
+<a class="header" href="#blockchain-event-loop" id="blockchain-event-loop"><h2>Blockchain Event Loop</h2></a>
+<p>This pattern feels similar to the javascript <em>event loop</em>, which is how js code handles events (often one at a time). The loop runs continually, executing any tasks queued. It can have multiple task sources to guarantee execution order with each source, but the browser gets to choose which task to execute from each source upon every turn of the loop.</p>
+<p>Similar to how the browser negotiates task preference according to the application logic, our Substrate runtime can encode arbitrarily complex logic for queueing tasks in a storage map and dispatching them according to code placed in <a href="https://crates.parity.io/sr_primitives/traits/trait.OnInitialize.html#method.on_initialize"><code>on_initialize</code></a> or <a href="https://crates.parity.io/sr_primitives/traits/trait.OnFinalize.html#method.on_finalize"><code>on_finalize</code></a> methods.</p>
+<p>Similar to how the browser gives preference to certain tasks within an event loop, we can define an order for task execution in <code>on_finalize</code> based on the logic within our application.</p>
+<p>In the associated <a href="https://github.com/substrate-developer-hub/recipes/blob/master/kitchen/loop/src/lib.rs">event loop recipe</a> in the <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/">kitchen</a>, a generic pattern is exposed for queueing <code>Task</code>s, which are defined as</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+#[derive(Encode, Decode, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = &quot;std&quot;, derive(Debug))]
+pub struct Task&lt;BlockNumber&gt; {
+    // the priority of the task relative to other tasks
+    priority_score: PriorityScore,
+    // time at which the task is initially queued
+    proposed_at: BlockNumber,
+}
+#}</code></pre></pre>
+<p><code>PriorityScore</code> is a type alias for <code>u32</code> that provides an additional criteria for ordering task execution within a block. The <code>on_finalize</code> method specifies that the execution (<code>execute_tasks()</code>) is scheduled every <code>ExecutionFrequency</code> number of blocks.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn on_finalize(n: T::BlockNumber) {
+    if (n % T::ExecutionFrequency::get()).is_zero() {
+        // execute from the dispatchQ
+        Self::execute_tasks(n);
+    }
+}
+#}</code></pre></pre>
+<p>The <code>execute_tasks()</code> runtime method demonstrates how tasks are scheduled for execution based on the <code>PriorityScore</code> initially assigned by the proposer.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub fn execute_tasks(n: T::BlockNumber) {
+    let mut execute_q = Vec::new(); 
+    &lt;TaskQ&lt;T&gt;&gt;::get().into_iter().for_each(|h| {
+        execute_q.push(&lt;Tasks&lt;T&gt;&gt;::get(h));
+        // sort based on priority score and block number
+        // requires adding `Ord` and `PartialOrd` to derive attribute on `Task` struct
+        execute_q.sort();
+        execute_q.iter().for_each(|t| {
+            // this is where each task is executed
+            // -- execution occurs in order based on sort()
+        });
+        &lt;Tasks&lt;T&gt;&gt;::remove(h); // here, we just remove executed tasks from the map
+    });
+    &lt;TaskQ&lt;T&gt;&gt;::kill();
+    // emit execution event
+    Self::deposit_event(RawEvent::TaskExecuted(n));
+}
+#}</code></pre></pre>
+<p>Although task execution in this example is minimal, tasks could easily take the shape of subscription payments, grant payouts, or any other scheduled service provision. As was mentioned before, <a href="https://github.com/paritytech/substrate/blob/master/srml/treasury/src/lib.rs"><code>srml/treasury</code></a> uses this pattern to schedule spending according to the logic in the <code>spend_funds</code> runtime method.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../common/permissioned.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../recipes/index.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../common/permissioned.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../recipes/index.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Collateral Management - Substrate Recipes</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="Substrate runtime design patterns">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "../";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="../misc/index.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="../misc/setup.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><a href="../event/index.html"><strong aria-hidden="true">3.</strong> Events</a></li><li><ol class="section"><li><a href="../event/adder.html"><strong aria-hidden="true">3.1.</strong> Adding Machine</a></li></ol></li><li><a href="../storage/index.html"><strong aria-hidden="true">4.</strong> Storage</a></li><li><ol class="section"><li><a href="../storage/value.html"><strong aria-hidden="true">4.1.</strong> Single Value</a></li><li><a href="../storage/list.html"><strong aria-hidden="true">4.2.</strong> Maps</a></li><li><a href="../storage/constants.html"><strong aria-hidden="true">4.3.</strong> Configurable Constants</a></li></ol></li><li><a href="../types/index.html"><strong aria-hidden="true">5.</strong> Types and Traits</a></li><li><ol class="section"><li><a href="../types/collateral.html" class="active"><strong aria-hidden="true">5.1.</strong> Collateral Management</a></li><li><a href="../types/structs.html"><strong aria-hidden="true">5.2.</strong> Nested Structs</a></li></ol></li><li><a href="../common/index.html"><strong aria-hidden="true">6.</strong> Design Patterns</a></li><li><ol class="section"><li><a href="../common/permissioned.html"><strong aria-hidden="true">6.1.</strong> Permissioned Methods</a></li><li><a href="../common/loop.html"><strong aria-hidden="true">6.2.</strong> Blockchain Event Loop</a></li></ol></li><li><a href="../recipes/index.html"><strong aria-hidden="true">7.</strong> Recipes</a></li><li><ol class="section"><li><a href="../recipes/token.html"><strong aria-hidden="true">7.1.</strong> Token Transfer</a></li><li><a href="../recipes/social.html"><strong aria-hidden="true">7.2.</strong> Social Network</a></li></ol></li><li><a href="../tour/index.html"><strong aria-hidden="true">8.</strong> SRML Tour</a></li><li><ol class="section"><li><a href="../tour/treasury.html"><strong aria-hidden="true">8.1.</strong> Treasury</a></li></ol></li><li><a href="../safety/index.html"><strong aria-hidden="true">9.</strong> Advanced</a></li><li><ol class="section"><li><a href="../safety/cop.html"><strong aria-hidden="true">9.1.</strong> Declarative Programming</a></li><li><a href="../safety/optimizations.html"><strong aria-hidden="true">9.2.</strong> Optimizations</a></li></ol></li><li><a href="../misc/dessert.html"><strong aria-hidden="true">10.</strong> Featured Tutorials</a></li><li class="spacer"></li><li class="affix"><a href="../misc/resource.html">More Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Substrate Recipes</h1> 
+
+                        <div class="right-buttons">
+                            <a href="../print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#currency-types-and-locking-techniques" id="currency-types-and-locking-techniques"><h1>Currency Types and Locking Techniques</h1></a>
+<p>To use a balances type in the runtime, import the <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html"><code>Currency</code></a> trait from <code>srml/support</code></p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use support::traits::Currency;
+#}</code></pre></pre>
+<p>The <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html"><code>Currency</code></a> trait provides an abstraction over a fungible assets system. To use the behavior defined in <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html"><code>Currency</code></a>, include it in the trait bounds of a module type.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// included system::Trait inheritance because it's in my code
+pub trait Trait: system::Trait {
+    type Currency: Currency&lt;Self::AccountId&gt;;
+}
+#}</code></pre></pre>
+<p>Defining a module type with this trait bound allows the runtime to access the provided methods of <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html"><code>Currency</code></a>. For example, it is straightforward to check the total issuance of the system:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// in decl_module block
+T::Currency::total_issuance();
+#}</code></pre></pre>
+<p>As promised, it is also possible to type alias a balances type for use in the runtime:</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+type BalanceOf&lt;T&gt; = &lt;&lt;T as Trait&gt;::Currency as Currency&lt;&lt;T as system::Trait&gt;::AccountId&gt;&gt;::Balance;
+#}</code></pre></pre>
+<p>This new <code>BalanceOf&lt;T&gt;</code> type satisfies the type constraints of <code>Self::Balance</code> for the provided methods of <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html"><code>Currency</code></a>. This means that this type can be used for <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html#tymethod.transfer">transfer</a>, <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html#tymethod.deposit_into_existing">minting</a>, and <a href="https://crates.parity.io/srml_support/traits/trait.Currency.html">much more</a>.</p>
+<a class="header" href="#reservable-currency" id="reservable-currency"><h2>Reservable Currency</h2></a>
+<p><a href="https://github.com/paritytech/substrate/blob/master/srml/treasury/src/lib.rs"><code>srml/treasury</code></a> uses the <code>Currency</code> type for bonding spending proposals. To reserve and unreserve balances for bonding, <code>treasury</code> uses the <a href="https://crates.parity.io/srml_support/traits/trait.ReservableCurrency.html"><code>ReservableCurrency</code></a> trait. The import and module type declaration follow convention</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use support::traits::{Currency, ReservableCurrency};
+
+pub trait Trait: system::Trait {
+    type Currency: Currency&lt;Self::AccountId&gt; + ReservableCurrency&lt;Self::AccountId&gt;;
+}
+#}</code></pre></pre>
+<p>To lock or unlock some quantity of funds, it is sufficient to invoke <code>reserve</code> and <code>unreserve</code> respectively</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+pub fn lock_funds(origin, amount: BalanceOf&lt;T&gt;) -&gt; Result {
+    let locker = ensure_signed(origin)?;
+
+    T::Currency::reserve(&amp;locker, amount)
+            .map_err(|_| &quot;locker can't afford to lock the amount requested&quot;)?;
+
+    let now = &lt;system::Module&lt;T&gt;&gt;::block_number();
+    
+    Self::deposit_event(RawEvent::LockFunds(locker, amount, now));
+    Ok(())
+}
+
+pub fn unlock_funds(origin, amount: BalanceOf&lt;T&gt;) -&gt; Result {
+    let unlocker = ensure_signed(origin)?;
+
+    T::Currency::unreserve(&amp;unlocker, amount);
+
+    let now = &lt;system::Module&lt;T&gt;&gt;::block_number();
+
+    Self::deposit_event(RawEvent::LockFunds(unlocker, amount, now));
+    Ok(())
+}
+#}</code></pre></pre>
+<p><em>The full code can be found in <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/reservable"><code>collateral/reservable</code></a> in the <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/README.md">kitchen</a></em></p>
+<a class="header" href="#lockable-currency" id="lockable-currency"><h2>Lockable Currency</h2></a>
+<p><a href="https://github.com/paritytech/substrate/blob/master/srml/staking/src/lib.rs"><code>srml/staking</code></a> similarly uses <a href="https://crates.parity.io/srml_support/traits/trait.LockableCurrency.html"><code>LockableCurrency</code></a> trait for more nuanced handling of capital locking based on time increments. This type can be very useful in the context of economic systems that enforce accountability by collateralizing fungible resources. Import this trait in the usual way</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+use support::traits::{LockIdentifier, LockableCurrency}
+
+pub trait Trait: system::Trait {
+    /// The lockable currency type
+    type Currency: LockableCurrency&lt;Self::AccountId, Moment=Self::BlockNumber&gt;;
+
+    // Example length of a generic lock period
+    type LockPeriod: Get&lt;Self::BlockNumber&gt;;
+    ...
+}
+#}</code></pre></pre>
+<p>To use <a href="https://crates.parity.io/srml_support/traits/trait.LockableCurrency.html"><code>LockableCurrency</code></a>, it is necessary to define a <a href="https://crates.parity.io/srml_support/traits/type.LockIdentifier.html"><code>LockIdentifier</code></a>.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+const EXAMPLE_ID: LockIdentifier = *b&quot;example &quot;;
+#}</code></pre></pre>
+<p>By using this <code>EXAMPLE_ID</code>, it is straightforward to define logic within the runtime to schedule locking, unlocking, and extending existing locks.</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+fn lock_capital(origin, amount: BalanceOf&lt;T&gt;) -&gt; Result {
+    let user = ensure_signed(origin)?;
+
+    T::Currency::set_lock(
+        EXAMPLE_ID,
+        user.clone(),
+        amount,
+        T::LockPeriod::get(),
+        WithdrawReasons::except(WithdrawReason::TransactionPayment),
+    );
+
+    Self::deposit_event(RawEvent::Locked(user, amount));
+    Ok(())
+}
+#}</code></pre></pre>
+<p><em>The full code can be found in <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/lockable"><code>collateral/lockable</code></a> in the <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/README.md">kitchen</a>.</em></p>
+<a class="header" href="#imbalances" id="imbalances"><h2>Imbalances</h2></a>
+<p>Functions that alter balances return an object of the <a href="https://crates.parity.io/srml_support/traits/trait.Imbalance.html"><code>Imbalance</code></a> type to express how much account balances have been altered in aggregate. This is useful in the context of state transitions that adjust the total supply of the <code>Currency</code> type in question.</p>
+<p>To manage this supply adjustment, the <a href="https://crates.parity.io/srml_support/traits/trait.OnUnbalanced.html"><code>OnUnbalanced</code></a> handler is often used. An example might look something like</p>
+<pre><pre class="playpen"><code class="language-rust">
+# #![allow(unused_variables)]
+#fn main() {
+// runtime method (ie decl_module block)
+pub fn reward_funds(origin, to_reward: T::AccountId, reward: BalanceOf&lt;T&gt;) {
+    let _ = ensure_signed(origin)?;
+
+    let mut total_imbalance = &lt;PositiveImbalanceOf&lt;T&gt;&gt;::zero();
+
+    let r = T::Currency::deposit_into_existing(&amp;to_reward, reward).ok();
+    total_imbalance.maybe_subsume(r);
+    T::Reward::on_unbalanced(total_imbalance);
+
+    let now = &lt;system::Module&lt;T&gt;&gt;::block_number();
+    Self::deposit_event(RawEvent::RewardFunds(to_reward, reward, now));
+}
+#}</code></pre></pre>
+<p><em>The full code can be found in <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/imbalances"><code>collateral/imbalances</code></a> in the <a href="https://github.com/substrate-developer-hub/recipes/tree/master/kitchen/README.md">kitchen</a>.</em></p>
+<a class="header" href="#takeaways" id="takeaways"><h2>takeaways</h2></a>
+<p>The way by which we represent value in the runtime dictates both the security and flexibility of the underlying transactional system. Likewise, it is nice to be able to take advantage of Rust's <a href="https://blog.rust-lang.org/2015/05/11/traits.html">flexible trait system</a> when building systems intended to rethink how we exchange information and value 🚀</p>
+<p>BONUS: <em>see <a href="https://crates.parity.io/srml_support/traits/trait.OnDilution.html#tymethod.on_dilution"><code>OnDilution</code></a></em></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="../types/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="../types/structs.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="../types/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="../types/structs.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
